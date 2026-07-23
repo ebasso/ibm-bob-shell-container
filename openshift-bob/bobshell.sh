@@ -229,20 +229,20 @@ show_spinner() {
 
 if [[ ${selected} == "pnpm" ]]; then
     pnpm add --reg=https://registry.npmjs.org/ --reporter=silent -g "${dl_url}" > /tmp/bobshell-install.log 2>&1 &
-    show_spinner $!
-    wait $!
+    # show_spinner $!
+    # wait $!
 fi
 
 if [[ ${selected} == "npm" ]]; then
     npm install --reg=https://registry.npmjs.org/ --progress=false --loglevel=error -g "${dl_url}" > /tmp/bobshell-install.log 2>&1 &
-    show_spinner $!
-    wait $!
+    # show_spinner $!
+    # wait $!
 fi
 
 if [[ ${selected} == "yarn" ]]; then
     YARN_REGISTRY="https://registry.npmjs.org/" yarn global add --silent "${dl_url}" > /tmp/bobshell-install.log 2>&1 &
-    show_spinner $!
-    wait $!
+    # show_spinner $!
+    # wait $!
 fi
 
 # Verify installation properly instead of relying on exit code
