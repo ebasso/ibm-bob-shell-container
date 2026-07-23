@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: bob-shell-rolebinding
+  labels:
+    app: bob-shell
+subjects:
+  - kind: ServiceAccount
+    name: bob-shell
+roleRef:
+  kind: Role
+  name: bob-shell-role
+  apiGroup: rbac.authorization.k8s.io

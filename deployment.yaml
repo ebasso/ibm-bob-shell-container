@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bob-shell
+  labels:
+    app: bob-shell
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bob-shell
+  template:
+    metadata:
+      labels:
+        app: bob-shell
+    spec:
+      serviceAccountName: bob-shell
+      automountServiceAccountToken: true
+      containers:
+        - name: bob-shell
+          image: image-registry.openshift-image-registry.svc:5000/bob-shell/bob-shell:latest
+          imagePullPolicy: Always
+          command: ["/bin/sh"]
+          args: ["-c", "while true; do sleep 3600; done"]
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+            - name: bob-config
+              mountPath: /home/bobuser/.bob
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: BOB_WORKSPACE
+              value: "/workspace"
+            - name: KUBERNETES_SERVICE_HOST
+              value: "kubernetes.default.svc"
+            - name: KUBERNETES_SERVICE_PORT
+              value: "443"
+            # Credenciais do Bob Shell (bob.ibm.com)
+            - name: BOB_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: bob-credentials
+                  key: BOB_API_TOKEN
+                  optional: true
+            - name: BOB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: bob-credentials
+                  key: BOB_USERNAME
+                  optional: true
+            - name: BOB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bob-credentials
+                  key: BOB_PASSWORD
+                  optional: true
+            - name: BOB_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: bob-credentials
+                  key: BOB_API_URL
+                  optional: true
+          securityContext:
+            allowPrivilegeEscalation: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - ALL
+            seccompProfile:
+              type: RuntimeDefault
+      volumes:
+        - name: workspace
+          persistentVolumeClaim:
+            claimName: bob-workspace-pvc
+        - name: bob-config
+          emptyDir: {}
+      restartPolicy: Always
