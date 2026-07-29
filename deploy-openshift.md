@@ -1,6 +1,5 @@
-
-5
 ## File Structure
+
 ```text
 openshift-bob
 ├── Dockerfile
@@ -12,16 +11,15 @@ openshift-bob
 └── secret-bob-credentials.yaml
 ```
 
-
 ## Deploy on OpenShift
 
-### 1. Create a new porject
+### 1. Create a new project
 
 ```bash
 oc new-project bob-shell
 ```
 
-### 2. Apply manifests
+### 2. Apply the manifests
 
 ```bash
 oc apply -f secrets.yaml
@@ -32,36 +30,36 @@ oc apply -f pvc.yaml
 oc apply -f deployment.yaml
 ```
 
-## Using Bob Shell in OpenShift CLI
+## Using Bob Shell in the OpenShift CLI
 
-**Como obter o Token de API:**
-1. Acesse https://bob.ibm.com
-2. Faça login com suas credenciais IBM
-3. Vá em Settings/Profile > API Tokens
-4. Gere um novo token
-5. Copie e use no comando acima
+### How to get the API token
 
-### Acessar o Container
+1. Go to `https://bob.ibm.com`
+2. Sign in with your IBM credentials
+3. Navigate to **Settings/Profile > API Tokens**
+4. Generate a new token
+5. Copy it and use it in the command above
+
+### Access the container
 
 ```bash
-# Obter o nome do pod
+# Get the pod name
 POD_NAME=$(oc get pods -l app=bob-shell -o jsonpath='{.items[0].metadata.name}')
 
-# Acessar o shell do container
+# Access the container shell
 oc exec -it $POD_NAME -- /bin/bash
 ```
 
-### Dentro do Container
+### Inside the container
 
-Uma vez dentro do container, você tem acesso completo ao Bob Shell (autenticado com bob.ibm.com) e ao CLI do OpenShift:
+Once inside the container, you have full access to Bob Shell (authenticated with `bob.ibm.com`) and the OpenShift CLI:
 
 ```bash
-# Verificar autenticação do Bob Shell
+# Verify Bob Shell authentication
 bob whoami
 bob --version
 
-# Usar Bob Shell para tarefas de desenvolvimento
-bob ask "Como posso listar todos os pods com problemas?"
-bob code "Crie um script para verificar o status de todos os deployments"
+# Use Bob Shell for development tasks
+bob ask "How can I list all pods with issues?"
+bob code "Create a script to check the status of all deployments"
 ```
-

@@ -1,37 +1,41 @@
-# Bob Shell on containers
+# Bob Shell in Containers
 
+This repository contains the files needed to run **Bob Shell** in containerized environments.
 
+## Overview
 
-This directory contains the YAML files required to run **Bob Shell** inside a containerized environment.
+Bob Shell currently works with **Docker** and **Podman**.
 
-Currently, execution is supported only through **Docker** and **Podman**. Although the container can be deployed on an **OpenShift** cluster, full OpenShift support is **not yet functional**.
+OpenShift deployment files are also included, but OpenShift support is still **experimental**. At the moment, Bob Shell does not fully interact with the OpenShift environment when running from inside a pod.
 
-The current limitation is that Bob Shell is unable to properly interact with the OpenShift environment when executed from within a pod/container.
+> **Note**
+> Use Docker or Podman for supported container-based execution. The OpenShift manifests in this repository are provided for experimentation and further development.
 
+## Deployment Guides
 
-> **Note:** OpenShift support is currently under development and is not yet fully functional. At this time, Bob Shell is supported only with Docker and Podman. The OpenShift resources provided in this directory should be considered experimental.
+- [Build and push with Docker or Podman](deploy-docker-podman.md)
+- [Deploy on OpenShift](deploy-openshift.md)
 
+## Environment Variables Reference
 
+The repository also includes a Markdown reference for environment variables detected in Bob's bundled JavaScript:
 
-## Procedures
+- [Environment variables in `package/bundle/bob.js`](docs/environment-variables-package-bundle-bob-js.md)
 
-* [Deploy Bob Shell in a container Docker/Podman](deploy-docker-podman.md)
-
-* [Deploy Bob Shell in OpenShift ](deploy-docker-podman.md)
-
-
+This document groups `process.env.*` usage by category and can help you understand which variables may affect authentication, sandboxing, cloud integrations, networking, runtime behavior, and terminal execution inside containers.
 
 ## Support
 
-- **Bob Shell**: https://bob.ibm.com/docs
-
+- [Bob Shell documentation](https://bob.ibm.com/docs)
 
 ## License
 
-This project is licensed under the MIT Public License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License. See [LICENSE.md](LICENSE.md) for details.
 
 ## Disclaimer
 
-This repository is a personal-driven projects and is not officially supported or endorsed by IBM. While members of the community may include IBM employees, this project is independent of IBM's official support channels. Please note that any contributions, issues, or inquiries regarding this repository should be directed to the community maintainers and not to IBM's support teams. We appreciate your understanding and participation in this personal-driven initiative.
+This repository is a personal project and is not officially supported or endorsed by IBM.
 
-This code can be used as is. And any feedback will be welcome. We does not make any warranty about the completeness, reliability and accuracy of this code. Any action you take by using this code is strictly at your own risk, and this project will not be liable for any losses and damages in connection with the use of this code.
+Although contributors may include IBM employees, this repository is independent from IBM support channels. Issues, questions, and contributions should be directed to the repository maintainers.
+
+This code is provided as is, without warranties of any kind, including completeness, reliability, or accuracy. Any use of this code is at your own risk. The project maintainers are not liable for losses or damages resulting from its use.
