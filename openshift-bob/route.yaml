@@ -1,0 +1,13 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: call-back-route
+spec:
+  path: /
+  to:
+    kind: Service
+    name: call-back-port
+    weight: 100
+  port:
+    targetPort: 10000
+  wildcardPolicy: None

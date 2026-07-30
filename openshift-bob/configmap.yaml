@@ -1,0 +1,13 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: bob-proxy-config
+  labels:
+    app: bob-shell
+data:
+  HTTPS_PROXY: 'http://proxy.company.com:8080'
+  HTTP_PROXY: 'http://proxy.company.com:8080'
+  NO_PROXY: 'localhost,127.0.0.1,.svc,.cluster.local,kubernetes.default'
+  OAUTH_CALLBACK_HOST: <PUT ROUTE ADDRESS HERE>
+  OAUTH_CALLBACK_PORT: '80'
+ 

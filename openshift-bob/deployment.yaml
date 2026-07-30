@@ -11,75 +11,93 @@ spec:
       app: bob-shell
   template:
     metadata:
+      creationTimestamp: null
       labels:
         app: bob-shell
     spec:
+      restartPolicy: Always
       serviceAccountName: bob-shell
-      automountServiceAccountToken: true
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
       containers:
-        - name: bob-shell
-          image: <DOCKER_REPO>/bob-shell:1.0.6
-          imagePullPolicy: Always
-          command: ["/bin/sh"]
-          args: ["-c", "while true; do sleep 3600; done"]
-          resources:
-            requests:
-              memory: "512Mi"
-              cpu: "250m"
+        - resources:
             limits:
-              memory: "2Gi"
-              cpu: "1000m"
-          volumeMounts:
-            - name: workspace
-              mountPath: /workspace
-            - name: bob-config
-              mountPath: /home/bobuser/.bob
+              cpu: '1'
+              memory: 2Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          terminationMessagePath: /dev/termination-log
+          name: bob-shell
+          command:
+            - /bin/sh
           env:
             - name: NODE_ENV
-              value: "production"
-            - name: BOB_WORKSPACE
-              value: "/workspace"
+              value: production
             - name: KUBERNETES_SERVICE_HOST
-              value: "kubernetes.default.svc"
+              value: kubernetes.default.svc
             - name: KUBERNETES_SERVICE_PORT
-              value: "443"
-            # Credenciais do Bob Shell (bob.ibm.com)
-            - name: BOB_API_TOKEN
+              value: '443'
+            - name: HTTP_PROXY
               valueFrom:
-                secretKeyRef:
-                  name: bob-credentials
-                  key: BOB_API_TOKEN
+                configMapKeyRef:
+                  name: bob-proxy-config
+                  key: HTTP_PROXY
                   optional: true
-            - name: BOB_USERNAME
+            - name: HTTPS_PROXY
               valueFrom:
-                secretKeyRef:
-                  name: bob-credentials
-                  key: BOB_USERNAME
+                configMapKeyRef:
+                  name: bob-proxy-config
+                  key: HTTPS_PROXY
                   optional: true
-            - name: BOB_PASSWORD
+            - name: NO_PROXY
               valueFrom:
-                secretKeyRef:
-                  name: bob-credentials
-                  key: BOB_PASSWORD
+                configMapKeyRef:
+                  name: bob-proxy-config
+                  key: NO_PROXY
                   optional: true
-            - name: BOB_API_URL
+            - name: OAUTH_CALLBACK_HOST
               valueFrom:
-                secretKeyRef:
-                  name: bob-credentials
-                  key: BOB_API_URL
+                configMapKeyRef:
+                  name: bob-proxy-config
+                  key: OAUTH_CALLBACK_HOST
+                  optional: true
+            - name: OAUTH_CALLBACK_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: bob-proxy-config
+                  key: OAUTH_CALLBACK_PORT
                   optional: true
           securityContext:
-            allowPrivilegeEscalation: false
-            runAsNonRoot: true
             capabilities:
               drop:
                 - ALL
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
             seccompProfile:
               type: RuntimeDefault
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: workspace
+              mountPath: /app
+          terminationMessagePolicy: File
+          image: 'docker.io/ebasso/bob-shell:1.0.6'
+          args:
+            - '-c'
+            - while true; do sleep 3600; done
+      automountServiceAccountToken: true
+      serviceAccount: bob-shell
       volumes:
         - name: workspace
           persistentVolumeClaim:
             claimName: bob-workspace-pvc
-        - name: bob-config
-          emptyDir: {}
-      restartPolicy: Always
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
+ 

@@ -27,6 +27,8 @@ oc apply -f serviceaccount.yaml
 oc apply -f role.yaml
 oc apply -f rolebinding.yaml
 oc apply -f pvc.yaml
+oc apply -f service.yaml
+oc apply -f route.yaml
 ```
 
 ### 3. Build and push the container image
@@ -48,6 +50,17 @@ Update the `image` field in `deployment.yaml` to point to your pushed image.
 ```bash
 oc apply -f deployment.yaml
 ```
+
+### 5. Custom Environment variables
+
+If you need use a reverse proxy or put call back address, change configmap.yaml and run
+
+```bash
+oc apply -f configmap.yaml
+```
+
+Delete pod, to setup configuration.
+
 
 ## Using Bob Shell in the OpenShift CLI
 
