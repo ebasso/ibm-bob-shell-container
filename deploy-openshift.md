@@ -27,6 +27,25 @@ oc apply -f serviceaccount.yaml
 oc apply -f role.yaml
 oc apply -f rolebinding.yaml
 oc apply -f pvc.yaml
+```
+
+### 3. Build and push the container image
+
+Before deploying, you need to build the container image and push it to a registry accessible by your OpenShift cluster. Follow the instructions in `deploy-docker-podman.md` to build the image.
+
+After building, tag and push the image to your registry:
+
+```bash
+# Example: Push to OpenShift internal registry
+docker tag bob-shell:latest <your-registry>/bob-shell/bob-shell:latest
+docker push <your-registry>/bob-shell/bob-shell:latest
+```
+
+Update the `image` field in `deployment.yaml` to point to your pushed image.
+
+### 4. Deploy the application
+
+```bash
 oc apply -f deployment.yaml
 ```
 
